@@ -1,24 +1,27 @@
-# KI-Agent-Service 🚀
+# KI-Sicherheits-Check Backend
 
-Ein Agentensystem zur Analyse von Unternehmensdaten via KI (GPT-4), das automatisch ein Executive Briefing mit Handlungsempfehlungen erstellt.
+Dies ist das Flask-Backend für das Projekt `make.ki-sicherheit.jetzt`. Es verarbeitet Formularantworten, analysiert sie via GPT-4 und gibt strukturierte Ergebnisse zurück – optional für PDFMonkey.
 
-## 📦 Projektstruktur
+## Lokaler Start
+```
+pip install flask openai
+export OPENAI_API_KEY=sk-...
+flask run
+```
 
-- `formular/`: HTML-Frontend mit Fragebogen
-- `agent-backend/`: Node.js/Express + GPT-Agentenlogik
-- Deployment: Netlify (Frontend) & Railway (Backend)
+## Endpunkt
+`POST /analyze?partner=partnername`
 
-## 🧠 Agenten
+Body (JSON):
+```json
+{
+  "answers": {
+    "name": "Max Mustermann",
+    "unternehmen": "Test GmbH",
+    ...
+  }
+}
+```
 
-1. **Strategist**: analysiert Ziele, Reifegrad, Potenzial
-2. **Expert**: erstellt Empfehlungen mit Tools & Roadmap
-3. **Legal**: DSGVO & EU AI Act Profil & Pflichten
-4. **Merger**: generiert validiertes JSON für PDF-Ausgabe
-
-## 🚀 Setup (lokal)
-
-```bash
-cd agent-backend
-cp .env.example .env
-npm install
-npm run dev
+Antwort:
+GPT-Auswertung + Partnerbranding

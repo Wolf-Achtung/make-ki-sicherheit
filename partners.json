@@ -1,0 +1,14 @@
+{
+  "stb-schmidt": {
+    "partner_name": "Steuerberatung Schmidt",
+    "logo_url": "https://make.ki-sicherheit.jetzt/badges/stb-schmidt-logo.png",
+    "footer_text": "Empfohlen durch Ihre Steuerberatung Schmidt",
+    "farbe": "#0b3d91"
+  },
+  "digitalcoachin": {
+    "partner_name": "DigitalCoachin",
+    "logo_url": "https://make.ki-sicherheit.jetzt/badges/digitalcoachin-logo.png",
+    "footer_text": "Bereitgestellt von DigitalCoachin.de",
+    "farbe": "#9d1b73"
+  }
+}
