@@ -11,8 +11,7 @@ def home():
 @app.route("/analyze", methods=["POST"])
 def analyze():
     import openai
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
+    openai.api_key = os.getenv("OPENAI_API_KEY")
     import datetime
     import json
 
