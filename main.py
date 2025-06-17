@@ -107,6 +107,7 @@ Hier ist deine fehlerhafte Ausgabe:
 def generate_pdf():
     pdfmonkey_api_key = os.getenv("PDFMONKEY_API_KEY")
     pdfmonkey_template_id = os.getenv("PDFMONKEY_TEMPLATE_ID")
+    make_webhook_url = os.getenv("MAKE_WEBHOOK_URL")  # in Railway Secrets speichern!
 
     data = request.json
 
@@ -117,6 +118,7 @@ def generate_pdf():
         }
     }
 
+    # Schritt 1: PDF erstellen
     response = requests.post(
         "https://api.pdfmonkey.io/api/v1/documents",
         json=payload,
@@ -126,8 +128,23 @@ def generate_pdf():
         }
     )
 
-    if response.status_code == 201:
-        download_url = response.json()["data"]["attributes"]["download_url"]
-        return jsonify({"pdf_url": download_url})
-    else:
+    if response.status_code != 201:
         return jsonify({"error": response.text}), 400
+
+    download_url = response.json()["data"]["attributes"]["download_url"]
+
+    # Schritt 2: Mailversand via Make triggern
+    mail_payload = {
+        "email": data.get("email"),
+        "name": data.get("name"),
+        "pdf_url": download_url,
+        "partner_name": data.get("partner", {}).get("partner_name", "KI-Sicherheit.jetzt")
+    }
+
+    try:
+        mail_response = requests.post(make_webhook_url, json=mail_payload)
+        mail_response.raise_for_status()
+    except Exception as e:
+        print("⚠️ Mailversand fehlgeschlagen:", e)
+
+    return jsonify({"pdf_url": download_url})
