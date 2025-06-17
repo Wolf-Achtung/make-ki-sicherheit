@@ -19,11 +19,12 @@ def analyze():
 
     user_input = request.json["answers"]
 
-    prompt_template = """Du bist ein KI-Analyst für Unternehmen, die sich mit dem Thema Künstliche Intelligenz befassen. Analysiere die folgenden Angaben aus einem interaktiven KI-Check und gib eine umfassende Bewertung zurück. Deine Antwort soll **ausschließlich aus gültigem JSON** bestehen, das automatisch in ein PDF übertragen wird. Gib kein Fließtext und keine Vorbemerkung zurück.
+    prompt_template = """
+Du bist ein KI-Analyst für Unternehmen, die sich mit dem Thema Künstliche Intelligenz befassen. Analysiere die folgenden Angaben aus einem interaktiven KI-Check und gib eine umfassende Bewertung zurück. Deine Antwort soll **ausschließlich aus gültigem JSON** bestehen, das automatisch in ein PDF übertragen wird. Gib kein Fließtext und keine Vorbemerkung zurück.
 
 Die Bewertung soll folgende Felder enthalten:
 
-{
+{{
   "name": "...",
   "unternehmen": "...",
   "datum": "TT.MM.JJJJ",
@@ -33,35 +34,35 @@ Die Bewertung soll folgende Felder enthalten:
   "executive_summary": "...",
   "analyse": "...",
   "empfehlungen": [
-    {
+    {{
       "titel": "...",
       "beschreibung": "...",
       "next_step": "...",
       "tool": "..."
-    }
+    }}
   ],
   "ressourcen": "...",
   "zukunft": "...",
-  "gamechanger": {
+  "gamechanger": {{
     "idee": "...",
     "begründung": "...",
     "potenzial": "..."
-  },
-  "risikoprofil": {
+  }},
+  "risikoprofil": {{
     "risikoklasse": "gering | mittel | hoch",
     "begruendung": "...",
     "pflichten": ["...", "..."]
-  },
+  }},
   "tooltipps": [
-    { "name": "...", "einsatz": "...", "warum": "..." }
+    {{ "name": "...", "einsatz": "...", "warum": "..." }}
   ],
   "foerdertipps": [
-    { "programm": "...", "zielgruppe": "...", "nutzen": "..." }
+    {{ "programm": "...", "zielgruppe": "...", "nutzen": "..." }}
   ],
   "branchenvergleich": "...",
   "trendreport": "...",
   "visionaer": "..."
-}
+}}
 
 Nutze für Score & Status die Antworten auf die 10 Skalenfragen. Berücksichtige auch Branche, Selbstständigkeit und alle Freitexte. Die Gamechanger-Idee darf visionär sein und muss kein direkt logischer Vorschlag sein – z. B. ein neuartiges Produkt oder Modell mit KI.
 
