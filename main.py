@@ -5,6 +5,7 @@ import time
 
 app = Flask(__name__)
 CORS(app)
+
 @app.route("/")
 def home():
     return "✅ Flask läuft – API bereit."
@@ -18,7 +19,7 @@ def analyze():
 
     user_input = request.json["answers"]
 
-    prompt = f"""[Du bist ein KI-Analyst für Unternehmen, die sich mit dem Thema Künstliche Intelligenz befassen. Analysiere die folgenden Angaben aus einem interaktiven KI-Check und gib eine umfassende Bewertung zurück. Deine Antwort soll **ausschließlich aus gültigem JSON** bestehen, das automatisch in ein PDF übertragen wird. Gib kein Fließtext und keine Vorbemerkung zurück.
+    prompt_template = """Du bist ein KI-Analyst für Unternehmen, die sich mit dem Thema Künstliche Intelligenz befassen. Analysiere die folgenden Angaben aus einem interaktiven KI-Check und gib eine umfassende Bewertung zurück. Deine Antwort soll **ausschließlich aus gültigem JSON** bestehen, das automatisch in ein PDF übertragen wird. Gib kein Fließtext und keine Vorbemerkung zurück.
 
 Die Bewertung soll folgende Felder enthalten:
 
@@ -66,8 +67,10 @@ Nutze für Score & Status die Antworten auf die 10 Skalenfragen. Berücksichtige
 
 Hier sind die Nutzerdaten (als JSON):
 
-{{user_input}}
-]""".replace("{{user_input}}", json.dumps(user_input, ensure_ascii=False))
+{user_input}
+"""
+
+    prompt = prompt_template.format(user_input=json.dumps(user_input, ensure_ascii=False))
 
     def ask_gpt(p):
         response = openai.ChatCompletion.create(
@@ -86,13 +89,12 @@ Hier sind die Nutzerdaten (als JSON):
     result, error = try_parse(ask_gpt(prompt))
 
     if not result:
-        repair_prompt = f"Bitte gib das folgende JSON korrekt zurück, ohne Fließtext. Repariere es:\n\n{ask_gpt(prompt)}"
+        repair_prompt = "Bitte gib das folgende JSON korrekt zurück, ohne Fließtext. Repariere es:\n\n" + ask_gpt(prompt)
         result, error = try_parse(ask_gpt(repair_prompt))
 
     if not result:
         return jsonify({"error": "JSON-Parsing fehlgeschlagen", "details": error}), 500
 
-    # Datum ergänzen
     result["datum"] = datetime.datetime.now().strftime("%d.%m.%Y")
 
     return jsonify(result)
@@ -101,7 +103,6 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
 
-    # Debug-Endlosschleife
     while True:
         print("✅ Flask ist aktiv – Endlosschleife läuft")
         time.sleep(10)
